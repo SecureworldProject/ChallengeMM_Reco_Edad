@@ -1,4 +1,8 @@
 # Import Libraries
+from asyncio.windows_events import NULL
+import tkinter as tk
+from tkinter import messagebox
+from pathlib import Path
 import cv2
 import numpy as np
 import math
@@ -57,36 +61,61 @@ def age_gender_detector (input_path):
 
   return frame_face,edad
 
-FACE_PROTO = "weights/opencv_face_detector.pbtxt"
-FACE_MODEL = "weights/opencv_face_detector_uint8.pb"
-
-AGE_PROTO = "weights/age_deploy.prototxt"
-AGE_MODEL = "weights/age_net.caffemodel"
-
-GENDER_PROTO = "weights/gender_deploy.prototxt"
-GENDER_MODEL = "weights/gender_net.caffemodel"
 
 # Load network
-FACE_NET = cv2.dnn.readNet(FACE_MODEL, FACE_PROTO)
-AGE_NET = cv2.dnn.readNet(AGE_MODEL, AGE_PROTO)
-GENDER_NET = cv2.dnn.readNet(GENDER_MODEL, GENDER_PROTO)
+global FACE_NET
+global AGE_NET 
+global GENDER_NET 
 
-MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
-AGE_LIST = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)','(25, 32)', '(38, 43)', '(48, 53)', '(60, 100)']
+global MODEL_MEAN_VALUES 
+global AGE_LIST 
 
 
-GENDER_LIST = ["Hombre", "Mujer"]
+global GENDER_LIST
 
-box_padding = 20
+global box_padding
 
-props_dict = {}
 DEBUG_MODE = True
 
 def init(props):
     global props_dict
+    global FACE_NET
+    global AGE_NET 
+    global GENDER_NET 
+    
+    global MODEL_MEAN_VALUES 
+    global AGE_LIST 
+    
+    
+    global GENDER_LIST
+    
+    global box_padding
     print("Python: starting challenge init()")
     #cargamos el json que le pasemos y lo guardamos en la variable global
     props_dict = props
+    url=props_dict["url"]
+
+    FACE_PROTO =url+ "weights/opencv_face_detector.pbtxt"
+    FACE_MODEL =url+ "weights/opencv_face_detector_uint8.pb"
+    
+    AGE_PROTO = url+"weights/age_deploy.prototxt"
+    AGE_MODEL =url+ "weights/age_net.caffemodel"
+    
+    GENDER_PROTO =url+ "weights/gender_deploy.prototxt"
+    GENDER_MODEL = url+"weights/gender_net.caffemodel"
+    
+    # Load network
+    FACE_NET = cv2.dnn.readNet(FACE_MODEL, FACE_PROTO)
+    AGE_NET = cv2.dnn.readNet(AGE_MODEL, AGE_PROTO)
+    GENDER_NET = cv2.dnn.readNet(GENDER_MODEL, GENDER_PROTO)
+    
+    MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+    AGE_LIST = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)','(25, 32)', '(38, 43)', '(48, 53)', '(60, 100)']
+    
+    
+    GENDER_LIST = ["Hombre", "Mujer"]
+    
+    box_padding = 20
     return 0
 
 def executeChallenge():
@@ -127,6 +156,6 @@ def executeChallenge():
 
   cv2.waitKey(0)
   cv2.destroyAllWindows()
-
+  return result
 if __name__ == "__main__":
     executeChallenge()
