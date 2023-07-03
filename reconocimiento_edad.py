@@ -158,4 +158,29 @@ def executeChallenge():
   cv2.destroyAllWindows()
   return result
 if __name__ == "__main__":
+
+    print("Python: starting challenge init()")
+    #cargamos el json que le pasemos y lo guardamos en la variable global
+
+    FACE_PROTO = "./weights/opencv_face_detector.pbtxt"
+    FACE_MODEL = "./weights/opencv_face_detector_uint8.pb"
+    
+    AGE_PROTO ="./weights/age_deploy.prototxt"
+    AGE_MODEL ="./weights/age_net.caffemodel"
+    
+    GENDER_MODEL ="./weights/gender_net.caffemodel"
+    GENDER_PROTO ="./weights/gender_deploy.prototxt"
+    
+    # Load network
+    FACE_NET = cv2.dnn.readNet(FACE_MODEL, FACE_PROTO)
+    AGE_NET = cv2.dnn.readNet(AGE_MODEL, AGE_PROTO)
+    GENDER_NET = cv2.dnn.readNet(GENDER_MODEL, GENDER_PROTO)
+    
+    MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+    AGE_LIST = ['(0, 2)', '(4, 6)', '(8, 12)', '(15, 20)','(25, 32)', '(38, 43)', '(48, 53)', '(60, 100)']
+    
+    
+    GENDER_LIST = ["Hombre", "Mujer"]
+    
+    box_padding = 20
     executeChallenge()
