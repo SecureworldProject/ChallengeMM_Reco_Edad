@@ -118,6 +118,30 @@ def init(props):
     box_padding = 20
     return 0
 
+def list_ports():
+    """
+    Test the ports and returns a tuple with the available ports 
+    and the ones that are working.
+    """
+    is_working = True
+    dev_port = 0
+    working_ports = []
+    while is_working:
+        camera = cv2.VideoCapture(dev_port)
+        if not camera.isOpened():
+            is_working = False
+            print("Port %s is not working." %dev_port)
+        else:
+            is_reading, img = camera.read()
+            w = camera.get(3)
+            h = camera.get(4)
+            if is_reading:
+                print("Port %s is working and reads images (%s x %s)" %(dev_port,h,w))
+                working_ports.append(dev_port)
+        dev_port +=1
+    return working_ports
+
+
 def executeChallenge():
 
   print("Python: starting executeChallenge()")
@@ -127,21 +151,20 @@ def executeChallenge():
   #abrimos lock
   lock.lockIN("reconocimiento_edad")
   
-
-
-  cap = cv2.VideoCapture(0)
-
-  while(True):
-      ret, frame = cap.read()
-      rgb = frame
-      
-  
+  working_ports=list_ports()
+  print ("working:",working_ports)
+  for i in working_ports:
+    cap = cv2.VideoCapture(i)
+    ret, frame = cap.read()
+    rgb = frame
+    print("testing port: ",i)
+    output,edad = age_gender_detector(rgb)
+    #print(output, edad)
+    if (edad!=[]):
       break
+    else:
+        edad=[0,0]
 
-  cap.release()
-  cv2.destroyAllWindows()
-  del(cap)
-  output,edad = age_gender_detector(rgb)
   #cerramos el lock
   lock.lockOUT("reconocimiento_edad")
   if max(edad)>2:
