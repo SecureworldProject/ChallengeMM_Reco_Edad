@@ -168,9 +168,9 @@ def executeChallenge():
   #cerramos el lock
   lock.lockOUT("reconocimiento_edad")
   if max(edad)>2:
-      cad=1
+      cad='\0'
   else:
-      cad=0
+      cad='\u0001'
   cad="%d"%(cad)
   key = bytes(cad,'utf-8')
   key_size = len(key)
